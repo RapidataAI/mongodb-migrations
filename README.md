@@ -1,6 +1,6 @@
 # Rapidata.MongoDB.Migrations
 
-![Rapidata Logo](https://app.rapidata.ai/rapidata.svg)
+<img src="https://app.rapidata.ai/rapidata.svg" alt="Rapidata Logo" width="200" height="auto">
 
 A modern, thread-safe MongoDB migration engine for C#
 
