@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="769692f1-aba5-4039-81bb-2d495e0360fd" name="Changes" comment="" />
+    <list default="true" id="769692f1-aba5-4039-81bb-2d495e0360fd" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/LICENSE.md" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -79,7 +82,7 @@
       <workItem from="1725258782605" duration="2741000" />
       <workItem from="1725345952682" duration="850000" />
       <workItem from="1726046273636" duration="273000" />
-      <workItem from="1726046559793" duration="29047000" />
+      <workItem from="1726046559793" duration="30794000" />
     </task>
     <task id="LOCAL-00001" summary="feat: initial commit">
       <option name="closed" value="true" />
