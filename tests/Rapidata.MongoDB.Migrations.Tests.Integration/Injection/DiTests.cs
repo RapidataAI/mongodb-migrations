@@ -36,8 +36,8 @@ public class DiTests
         // Arrange
         var host = Host.CreateDefaultBuilder()
             .UseMongoDbMigrations(builder => builder
-                .WithDatabaseName("default")
-                .WithCollectionName("_migrations")
+                .WithDatabase("default")
+                .WithCollection("_migrations")
                 .WithMigrationAssemblies(typeof(TestMigration).Assembly))
             .ConfigureServices(collection => collection.AddSingleton<IMongoClient>(MongoFixture.Client))
             .Build();

@@ -25,8 +25,8 @@ public class MigrationEngineTests
     {
         CollectionName = Guid.NewGuid().ToString();
         var configBuilder = new MigrationConfigBuilder()
-            .WithCollectionName(CollectionName)
-            .WithDatabaseName("default");
+            .WithCollection(CollectionName)
+            .WithDatabase("default");
 
         configure?.Invoke(configBuilder);
         var config = configBuilder.Build();

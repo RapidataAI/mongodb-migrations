@@ -1,8 +1,10 @@
 using System.Reflection;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
 namespace Rapidata.MongoDB.Migrations.Config;
 
+[PublicAPI]
 public sealed class MigrationConfigBuilder
 {
     private readonly IDictionary<string, IList<Assembly>> _migrationAssembliesPerDatabase =
@@ -47,39 +49,39 @@ public sealed class MigrationConfigBuilder
         };
     }
 
-    public MigrationConfigBuilder WithCollectionName(string collectionName)
+    public MigrationConfigBuilder WithCollection(string collectionName)
     {
         _collectionName = collectionName;
         return this;
     }
 
-    public MigrationConfigBuilder WithDatabaseName(string databaseName)
+    public MigrationConfigBuilder WithDatabase(string databaseName)
     {
         _databaseName = databaseName;
         return this;
     }
 
-    public MigrationConfigBuilder ShouldRetryFailedMigrations(bool retryFailedMigrations)
+    public MigrationConfigBuilder RetryFailedMigrations()
     {
-        _retryFailedMigrations = retryFailedMigrations;
+        _retryFailedMigrations = true;
         return this;
     }
 
-    public MigrationConfigBuilder ShouldFailOnFailedMigrations(bool failOnFailedMigrations)
+    public MigrationConfigBuilder DontFailOnFailedMigrations()
     {
-        _failOnFailedMigrations = failOnFailedMigrations;
+        _failOnFailedMigrations = false;
         return this;
     }
 
-    public MigrationConfigBuilder ShouldRethrowExceptions(bool rethrowExceptions)
+    public MigrationConfigBuilder RethrowExceptions()
     {
-        _rethrowExceptions = rethrowExceptions;
+        _rethrowExceptions = true;
         return this;
     }
 
-    public MigrationConfigBuilder ShouldWaitForRunningMigrations(bool waitForRunningMigrations)
+    public MigrationConfigBuilder DontWaitForRunningMigrations()
     {
-        _waitForRunningMigrations = waitForRunningMigrations;
+        _waitForRunningMigrations = false;
         return this;
     }
 
@@ -87,6 +89,11 @@ public sealed class MigrationConfigBuilder
     {
         _migrationTimeout = migrationTimeout;
         return this;
+    }
+    
+    public MigrationConfigBuilder WithMigrationsInAssemblyOfType<T>()
+    {
+        return WithMigrationAssemblies(typeof(T).Assembly);
     }
 
     public MigrationConfigBuilder WithMigrationAssemblies(params Assembly[] migrationAssemblies)
@@ -108,7 +115,8 @@ public sealed class MigrationConfigBuilder
         return this;
     }
 
-    public MigrationConfigBuilder WithMigrationAssembliesForDatabase(string databaseName,
+    public MigrationConfigBuilder WithMigrationAssembliesForDatabase(
+        string databaseName,
         params Assembly[] migrationAssemblies)
     {
         _migrationAssembliesPerDatabase.TryAdd(databaseName, migrationAssemblies);

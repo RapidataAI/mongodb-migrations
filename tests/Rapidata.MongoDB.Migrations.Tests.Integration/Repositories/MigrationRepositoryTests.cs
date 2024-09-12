@@ -18,7 +18,7 @@ public class MigrationRepositoryTests
     public void Setup()
     {
         CollectionName = Guid.NewGuid().ToString();
-        var config = new MigrationConfigBuilder().WithCollectionName(CollectionName).Build();
+        var config = new MigrationConfigBuilder().WithCollection(CollectionName).Build();
 
         Database = MongoFixture.Client.GetDatabase("test");
         Subject = new MigrationRepository(Database, config);
