@@ -41,7 +41,7 @@ Then, register the migrations in the host and define at least one database to mi
 
 ```csharp
 // Register dependencies on the host
-host.UseMongoDbMigrations(builder => builder.WithDatabaseName("default").WithMigrationAssemblies(typeof(TestMigration).Assembly));
+host.UseMongoDbMigrations(builder => builder.WithDatabase("default").WithMigrationsInAssemblyOfType<TestMigration>);
 ```
 
 ```csharp
