@@ -4,39 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="769692f1-aba5-4039-81bb-2d495e0360fd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Rapidata.MongoDB.Migrations/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Rapidata.MongoDB.Migrations/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Rapidata.MongoDB.Migrations/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations.AspNetCore/Rapidata.MongoDB.Migrations.AspNetCore.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations.AspNetCore/Startup/HostBuilderExtensions.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations.AspNetCore/Startup/HostExtensions.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations.Tests.Integration/Core/MigrationEngineTests.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations.Tests.Integration/GlobalUsings.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations.Tests.Integration/MongoFixture.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations.Tests.Integration/Rapidata.MongoDB.Migrations.Tests.Integration.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations.Tests.Integration/Repositories/MigrationRepositoryTests.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations.Tests.Unit/Builders/MigrationEntityBuilder.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations.Tests.Unit/Builders/MigrationMockBuilder.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations.Tests.Unit/GlobalUsings.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations.Tests.Unit/Rapidata.MongoDB.Migrations.Tests.Unit.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations.sln" beforeDir="false" afterPath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations/Config/MigrationConfig.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations/Config/MigrationConfigBuilder.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations/Configuration/EntityConfiguration.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations/Contracts/IMigration.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations/Core/MigrationEngine.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations/Entities/Migration.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations/Entities/MigrationState.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations/Exceptions/HasFailedMigrationsException.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations/Rapidata.MongoDB.Migrations.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations/Repositories/IMigrationRepository.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations/Repositories/MigrationRepository.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations/Services/IMigrationResolver.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations/Services/IMigrationService.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations/Services/MigrationResolver.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations/Services/MigrationService.cs" beforeDir="false" />
-    </list>
+    <list default="true" id="769692f1-aba5-4039-81bb-2d495e0360fd" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -111,7 +79,7 @@
       <workItem from="1725258782605" duration="2741000" />
       <workItem from="1725345952682" duration="850000" />
       <workItem from="1726046273636" duration="273000" />
-      <workItem from="1726046559793" duration="28746000" />
+      <workItem from="1726046559793" duration="29047000" />
     </task>
     <task id="LOCAL-00001" summary="feat: initial commit">
       <option name="closed" value="true" />
@@ -143,32 +111,6 @@
           <line>18</line>
           <properties documentPath="$PROJECT_DIR$/Rapidata.MongoDB.Migrations/Core/MigrationEngine.cs" containingFunctionPresentation="Method 'Migrate'" />
           <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/Rapidata.MongoDB.Migrations/Core/MigrationEngine.cs</url>
-          <line>20</line>
-          <properties documentPath="$PROJECT_DIR$/src/Rapidata.MongoDB.Migrations/Core/MigrationEngine.cs" containingFunctionPresentation="Method 'Migrate'">
-            <startOffsets>
-              <option value="634" />
-            </startOffsets>
-            <endOffsets>
-              <option value="675" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/src/Rapidata.MongoDB.Migrations/Core/MigrationEngine.cs</url>
-          <line>36</line>
-          <properties documentPath="$PROJECT_DIR$/src/Rapidata.MongoDB.Migrations/Core/MigrationEngine.cs" containingFunctionPresentation="Method 'ExecuteMigrationsForDatabase'">
-            <startOffsets>
-              <option value="1212" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1301" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
