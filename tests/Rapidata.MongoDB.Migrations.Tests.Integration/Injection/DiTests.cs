@@ -5,6 +5,7 @@ using MongoDB.Driver;
 using Rapidata.MongoDB.Migrations.AspNetCore.Startup;
 using Rapidata.MongoDB.Migrations.Core;
 using Rapidata.MongoDB.Migrations.Entities;
+using Rapidata.MongoDB.Migrations.Providers;
 using Rapidata.MongoDB.Migrations.Tests.Integration.Data;
 
 namespace Rapidata.MongoDB.Migrations.Tests.Integration.Injection;
@@ -16,8 +17,9 @@ public class DiTests
     {
         // Arrange
         var host = Host.CreateDefaultBuilder()
-            .UseMongoDbMigrations()
-            .ConfigureServices(collection => collection.AddSingleton<IMongoClient>(MongoFixture.Client))
+            .AddMongoDbMigrations()
+            .ConfigureServices(collection =>
+                collection.AddSingleton<IMongoClientProvider>(new DefaultMongoClientProvider(MongoFixture.Client)))
             .Build();
 
         // Act
@@ -35,11 +37,12 @@ public class DiTests
     {
         // Arrange
         var host = Host.CreateDefaultBuilder()
-            .UseMongoDbMigrations(builder => builder
+            .AddMongoDbMigrations(builder => builder
                 .WithDatabase("default")
                 .WithCollection("_migrations")
                 .WithMigrationAssemblies(typeof(TestMigration).Assembly))
-            .ConfigureServices(collection => collection.AddSingleton<IMongoClient>(MongoFixture.Client))
+            .ConfigureServices(collection =>
+                collection.AddSingleton<IMongoClientProvider>(new DefaultMongoClientProvider(MongoFixture.Client)))
             .Build();
 
         // Act
@@ -47,7 +50,8 @@ public class DiTests
         await host.MigrateMongoDb();
 
         // Assert
-        var mongoClient = host.Services.GetRequiredService<IMongoClient>();
+        var mongoClientProvider = host.Services.GetRequiredService<IMongoClientProvider>();
+        var mongoClient = mongoClientProvider.GetClient();
         var database = mongoClient.GetDatabase("default");
         var migrations = await database.GetCollection<Migration>("_migrations")
             .CountDocumentsAsync(FilterDefinition<Migration>.Empty);

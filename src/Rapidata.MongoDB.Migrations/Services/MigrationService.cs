@@ -1,9 +1,8 @@
-using System.Collections.Immutable;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
-using MongoDB.Driver;
 using Rapidata.MongoDB.Migrations.Config;
 using Rapidata.MongoDB.Migrations.Contracts;
+using Rapidata.MongoDB.Migrations.Providers;
 using Rapidata.MongoDB.Migrations.Repositories;
 using Rapidata.MongoDB.Migrations.Utils;
 
@@ -13,26 +12,19 @@ public class MigrationService : IMigrationService
 {
     private readonly MigrationConfig _config;
     private readonly ILogger<MigrationService> _logger;
-    private readonly ImmutableDictionary<string, IMigrationRepository> _migrationRepositories;
     private readonly IMigrationResolver _migrationResolver;
-    private readonly IMongoClient _mongoClient;
+    private readonly IMongoClientProvider _mongoClientProvider;
 
     public MigrationService(
-        IMongoClient mongoClient,
+        IMongoClientProvider mongoClientProvider,
         MigrationConfig config,
         IMigrationResolver migrationResolver,
         ILogger<MigrationService> logger)
     {
-        _mongoClient = mongoClient;
+        _mongoClientProvider = mongoClientProvider;
         _config = config;
         _migrationResolver = migrationResolver;
         _logger = logger;
-
-        _migrationRepositories = config.MigrationAssembliesPerDatabase.Keys
-            .Select(databaseName => new KeyValuePair<string, IMigrationRepository>(
-                databaseName,
-                new MigrationRepository(mongoClient.GetDatabase(databaseName), config)))
-            .ToImmutableDictionary(pair => pair.Key, pair => pair.Value);
     }
 
     public async Task<IDictionary<string, IList<IMigration>>> GetMigrationsToExecutePerDatabase(
@@ -68,10 +60,8 @@ public class MigrationService : IMigrationService
                 return;
             }
 
-            _logger.LogInformation("Executing migration {MigrationName} with version {MigrationVersion}",
-                migration.Name, migration.Version);
-
-            var database = _mongoClient.GetDatabase(databaseName);
+            var client = _mongoClientProvider.GetClient();
+            var database = client.GetDatabase(databaseName);
 
             await migration.Migrate(database, cancellationToken)
                 .ConfigureAwait(false);
@@ -80,8 +70,7 @@ public class MigrationService : IMigrationService
                 .CompleteMigration(migration, cancellationToken)
                 .ConfigureAwait(false);
 
-            _logger.LogInformation("Migration {MigrationName} with version {MigrationVersion} completed",
-                migration.Name, migration.Version);
+            _logger.LogInformation("Migration {MigrationName} completed", migration.Name);
         }
         catch (Exception ex)
         {
@@ -167,11 +156,11 @@ public class MigrationService : IMigrationService
             .ToList();
     }
 
-    private IMigrationRepository GetMigrationRepository(string databaseName)
+    private MigrationRepository GetMigrationRepository(string databaseName)
     {
-        if (!_migrationRepositories.TryGetValue(databaseName, out var repository))
-            throw new InvalidOperationException($"No migration repository found for database {databaseName}");
-
-        return repository;
+        var client = _mongoClientProvider.GetClient();
+        var database = client.GetDatabase(databaseName);
+        
+        return new MigrationRepository(database, _config);
     }
 }

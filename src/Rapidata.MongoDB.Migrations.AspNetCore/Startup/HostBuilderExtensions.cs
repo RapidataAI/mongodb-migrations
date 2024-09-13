@@ -9,7 +9,7 @@ namespace Rapidata.MongoDB.Migrations.AspNetCore.Startup;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder UseMongoDbMigrations(
+    public static IHostBuilder AddMongoDbMigrations(
         this IHostBuilder hostBuilder,
         Action<MigrationConfigBuilder>? configure = null,
         ILogger? logger = null)

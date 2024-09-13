@@ -21,7 +21,7 @@ public class MigrationEntityBuilder
             Name = _name,
             Version = _version,
             State = _state,
-            CreatedAt = _createdAt,
+            AppliedAt = _createdAt,
             Date = _date,
             DeveloperId = _developerId
         };

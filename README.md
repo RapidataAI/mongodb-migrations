@@ -1,7 +1,5 @@
 # Rapidata.MongoDB.Migrations
 
-<img src="https://app.rapidata.ai/rapidata.svg" alt="Rapidata Logo" width="200" height="auto">
-
 A modern, thread-safe MongoDB migration engine for C#
 
 [![NuGet](https://img.shields.io/nuget/v/Rapidata.MongoDB.Migrations.svg)](https://www.nuget.org/packages/Rapidata.MongoDB.Migrations/)
@@ -41,7 +39,7 @@ Then, register the migrations in the host and define at least one database to mi
 
 ```csharp
 // Register dependencies on the host
-host.UseMongoDbMigrations(builder => builder.WithDatabase("default").WithMigrationsInAssemblyOfType<TestMigration>);
+host.AddMongoDbMigrations(builder => builder.WithDatabase("default").WithMigrationsInAssemblyOfType<TestMigration>);
 ```
 
 ```csharp

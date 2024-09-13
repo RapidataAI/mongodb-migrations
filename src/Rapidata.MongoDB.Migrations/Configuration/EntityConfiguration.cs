@@ -12,6 +12,7 @@ public static class EntityConfiguration
         BsonClassMap.TryRegisterClassMap<Migration>(classMap =>
         {
             classMap.AutoMap();
+
             classMap.MapProperty(migration => migration.Id)
                 .SetSerializer(new StringSerializer(BsonType.ObjectId));
 

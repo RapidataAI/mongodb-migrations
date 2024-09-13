@@ -34,7 +34,8 @@ public sealed class MigrationEngine
         IList<IMigration> migrations,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Executing migrations for database {DatabaseName}", databaseName);
+        _logger.LogInformation("Executing {MigrationCount} migrations on database {DatabaseName}", migrations.Count,
+            databaseName);
 
         await _migrationService.CanExecuteMigrations(databaseName, cancellationToken)
             .ConfigureAwait(false);
@@ -43,8 +44,8 @@ public sealed class MigrationEngine
         {
             var migration = migrations[i];
             _logger.LogInformation(
-                "Executing migration {MigrationName} with version {MigrationVersion} for database {DatabaseName}. ({MigrationIndex}/{MigrationCount})",
-                migration.Name, migration.Version, databaseName, i + 1, migrations.Count);
+                "Executing migration {MigrationName} on database {DatabaseName}. ({MigrationIndex}/{MigrationCount})",
+                migration.Name, databaseName, i + 1, migrations.Count);
 
             await _migrationService.ExecuteMigration(databaseName, migration, cancellationToken)
                 .ConfigureAwait(false);

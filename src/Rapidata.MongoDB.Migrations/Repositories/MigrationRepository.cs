@@ -61,13 +61,17 @@ public class MigrationRepository : IMigrationRepository
     {
         var collection = GetCollection();
 
-        var filter = Builders<Migration>.Filter.Eq(x => x.Version, migration.Version);
+        var filter = Builders<Migration>.Filter.Where(m => m.Date == migration.Date &&
+                                                           m.DeveloperId == migration.DeveloperId &&
+                                                           m.Version == migration.Version);
 
         var update = Builders<Migration>.Update
             .SetOnInsert(x => x.Name, migration.Name)
+            .SetOnInsert(x => x.Date, migration.Date)
+            .SetOnInsert(x => x.DeveloperId, migration.DeveloperId)
             .SetOnInsert(x => x.Version, migration.Version)
             .SetOnInsert(x => x.State, MigrationState.Executing)
-            .SetOnInsert(x => x.CreatedAt, DateTime.UtcNow);
+            .SetOnInsert(x => x.AppliedAt, DateTime.UtcNow);
 
         var options = new UpdateOptions
         {

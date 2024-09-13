@@ -4,12 +4,13 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>0.0.1</Version>
-        <Title> A modern migration engine for MongoDB in C# - Dependency Injection Extensions
-</Title>
+        <Version>0.0.7</Version>
+        <Title>A modern migration engine for MongoDB in C# - Dependency Injection Extensions</Title>
         <PackageProjectUrl>https://rapidata.ai</PackageProjectUrl>
         <RepositoryUrl>https://github.com/RapidataAI/mongodb-migrations</RepositoryUrl>
         <RepositoryType>GitHub</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,6 +19,10 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Rapidata.MongoDB.Migrations\Rapidata.MongoDB.Migrations.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
 </Project>

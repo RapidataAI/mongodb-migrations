@@ -7,6 +7,7 @@ using Rapidata.MongoDB.Migrations.Config;
 using Rapidata.MongoDB.Migrations.Contracts;
 using Rapidata.MongoDB.Migrations.Core;
 using Rapidata.MongoDB.Migrations.Entities;
+using Rapidata.MongoDB.Migrations.Providers;
 using Rapidata.MongoDB.Migrations.Services;
 using Rapidata.MongoDB.Migrations.Tests.Unit.Builders;
 
@@ -19,7 +20,8 @@ public class MigrationEngineTests
     private MigrationEngine Subject { get; set; } = null!;
     private IDictionary<string, IMongoCollection<Migration>> Collections { get; set; } = null!;
     private IMongoCollection<Migration> DefaultCollection => Collections[DefaultDatabaseName];
-    private IMigrationService MigrationService { get; set; } = null!;
+    private MigrationService MigrationService { get; set; } = null!;
+    private Mock<IMigrationResolver> MigrationResolver { get; set; } = null!;
 
     private void Setup(Action<MigrationConfigBuilder>? configure = null, params IMigration[] migrations)
     {
@@ -31,8 +33,8 @@ public class MigrationEngineTests
         configure?.Invoke(configBuilder);
         var config = configBuilder.Build();
 
-        var migrationResolver = new Mock<IMigrationResolver>();
-        migrationResolver
+        MigrationResolver = new Mock<IMigrationResolver>();
+        MigrationResolver
             .Setup(x =>
                 x.GetMigrations(It.IsAny<IEnumerable<Assembly>>(),
                     It.IsAny<HashSet<IBaseMigration>>(),
@@ -41,9 +43,9 @@ public class MigrationEngineTests
 
         var serviceLogger = new NullLogger<MigrationService>();
         MigrationService = new MigrationService(
-            MongoFixture.Client,
+            new DefaultMongoClientProvider(MongoFixture.Client),
             config,
-            migrationResolver.Object,
+            MigrationResolver.Object,
             serviceLogger);
         var logger = new NullLogger<MigrationEngine>();
 
@@ -75,7 +77,7 @@ public class MigrationEngineTests
         var appliedMigration = await DefaultCollection.Find(FilterDefinition<Migration>.Empty).FirstOrDefaultAsync();
         appliedMigration.Version.Should().Be(version);
         appliedMigration.Name.Should().Be(name);
-        appliedMigration.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMilliseconds(50));
+        appliedMigration.AppliedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMilliseconds(50));
     }
 
     [Test]
@@ -243,5 +245,29 @@ public class MigrationEngineTests
             migration8,
             migration9
         }, options => options.WithStrictOrdering());
+    }
+
+    [Test]
+    public async Task Migrate_WhenTwoMigrationsAndOneAlreadyApplied_AppliesOnlyOne()
+    {
+        // Arrange
+        var migration1 = new MigrationMockBuilder().Build();
+        Setup(null, migration1.Object);
+        await Subject.Migrate(CancellationToken.None);
+
+        var migration2 = new MigrationMockBuilder().Build();
+        MigrationResolver.Setup(x =>
+                x.GetMigrations(It.IsAny<IEnumerable<Assembly>>(), It.IsAny<HashSet<IBaseMigration>>(),
+                    It.IsAny<bool>()))
+            .Returns([migration1.Object, migration2.Object]);
+
+        // Act
+        var migrationsToExecute = await MigrationService.GetMigrationsToExecutePerDatabase(CancellationToken.None);
+        await Subject.Migrate(CancellationToken.None);
+
+        // Assert
+        migrationsToExecute.SelectMany(x => x.Value).Should().HaveCount(1);
+        var count = await DefaultCollection.CountDocumentsAsync(FilterDefinition<Migration>.Empty);
+        count.Should().Be(2);
     }
 }
