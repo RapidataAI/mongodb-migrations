@@ -18,7 +18,7 @@ public sealed class MigrationConfigBuilder
     private bool _rethrowExceptions;
     private bool _retryFailedMigrations;
     private bool _waitForRunningMigrations = true;
-    private TimeSpan _waitForRunningMigrationsPollingInterval = TimeSpan.FromSeconds(1);
+    private TimeSpan _waitForRunningMigrationsPollingInterval = TimeSpan.FromMilliseconds(10);
     private TimeSpan _waitForRunningMigrationsTimeout = TimeSpan.FromMinutes(5);
 
     public MigrationConfig Build(ILogger? logger = null)

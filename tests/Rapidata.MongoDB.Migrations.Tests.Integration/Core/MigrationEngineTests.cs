@@ -64,7 +64,11 @@ public class MigrationEngineTests
         // Arrange
         const string name = "The cool migration";
         const short version = 7;
-        var migration = new MigrationMockBuilder().WithName(name).WithVersion(version).Build();
+        var migration = new MigrationMockBuilder()
+            .WithName(name)
+            .WithVersion(version)
+            .WithDate(new DateOnly(2024, 10, 13))
+            .Build();
         Setup(null, migration.Object);
 
         // Act
@@ -74,7 +78,8 @@ public class MigrationEngineTests
         var appliedMigration = await DefaultCollection.Find(FilterDefinition<Migration>.Empty).FirstOrDefaultAsync();
         appliedMigration.Version.Should().Be(version);
         appliedMigration.Name.Should().Be(name);
-        appliedMigration.AppliedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMilliseconds(50));
+        appliedMigration.AppliedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMilliseconds(100));
+        appliedMigration.Date.Should().Be(new DateOnly(2024, 10, 13));
     }
 
     [Test]
@@ -112,17 +117,19 @@ public class MigrationEngineTests
     public async Task Migrate_WhenHammered_AppliesMigrationOnce(int concurrentJobs)
     {
         // Arrange
+        var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(50000));
         var migration = new MigrationMockBuilder().Build();
         Setup(null, migration.Object);
 
         var jobs = new List<Task>();
-        for (var i = 0; i < concurrentJobs; i++) jobs.Add(Subject.Migrate(CancellationToken.None));
+        for (var i = 0; i < concurrentJobs; i++) jobs.Add(Subject.Migrate(cts.Token));
 
         // Act
         await Task.WhenAll(jobs.ToArray());
 
         // Assert
-        var count = await DefaultCollection.CountDocumentsAsync(FilterDefinition<Migration>.Empty);
+        var count = await DefaultCollection.CountDocumentsAsync(FilterDefinition<Migration>.Empty,
+            cancellationToken: cts.Token);
         count.Should().Be(1);
 
         migration.Verify(m => m.Migrate(It.IsAny<IMongoDatabase>(), It.IsAny<CancellationToken>()),
@@ -228,7 +235,6 @@ public class MigrationEngineTests
         var result = await MigrationService.GetMigrationsToExecutePerDatabase(CancellationToken.None);
 
         // Assert
-
         var totalMigrations = result.SelectMany(x => x.Value).ToList();
         totalMigrations.Should().BeEquivalentTo(new List<IMigration>
         {

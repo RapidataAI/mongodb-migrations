@@ -2,6 +2,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using Rapidata.MongoDB.Migrations.Entities;
+using Rapidata.MongoDB.Migrations.Utils;
 
 namespace Rapidata.MongoDB.Migrations.Configuration;
 
@@ -18,6 +19,9 @@ public static class EntityConfiguration
 
             classMap.MapProperty(migration => migration.State)
                 .SetSerializer(new EnumSerializer<MigrationState>(BsonType.String));
+            
+            classMap.MapProperty(migration => migration.Date)
+                .SetSerializer(new DateOnlySerializer());
         });
     }
 }
