@@ -35,10 +35,7 @@ public class MigrationEngineTests
 
         MigrationResolver = new Mock<IMigrationResolver>();
         MigrationResolver
-            .Setup(x =>
-                x.GetMigrations(It.IsAny<IEnumerable<Assembly>>(),
-                    It.IsAny<HashSet<IBaseMigration>>(),
-                    It.IsAny<bool>()))
+            .Setup(x => x.GetMigrations(It.IsAny<IEnumerable<Assembly>>()))
             .Returns(migrations);
 
         var serviceLogger = new NullLogger<MigrationService>();
@@ -255,10 +252,8 @@ public class MigrationEngineTests
         Setup(null, migration1.Object);
         await Subject.Migrate(CancellationToken.None);
 
-        var migration2 = new MigrationMockBuilder().Build();
-        MigrationResolver.Setup(x =>
-                x.GetMigrations(It.IsAny<IEnumerable<Assembly>>(), It.IsAny<HashSet<IBaseMigration>>(),
-                    It.IsAny<bool>()))
+        var migration2 = new MigrationMockBuilder().WithVersion(2).Build();
+        MigrationResolver.Setup(x => x.GetMigrations(It.IsAny<IEnumerable<Assembly>>()))
             .Returns([migration1.Object, migration2.Object]);
 
         // Act

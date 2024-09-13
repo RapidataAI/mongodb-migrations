@@ -4,7 +4,8 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>0.0.7</Version>
+        <Authors>Rapidata</Authors>
+        <Version>0.0.8</Version>
         <Title>A modern migration engine for MongoDB in C# - Dependency Injection Extensions</Title>
         <PackageProjectUrl>https://rapidata.ai</PackageProjectUrl>
         <RepositoryUrl>https://github.com/RapidataAI/mongodb-migrations</RepositoryUrl>

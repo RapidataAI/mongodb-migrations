@@ -1,7 +1,9 @@
 using System.Reflection;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver.Linq;
 using Rapidata.MongoDB.Migrations.Config;
 using Rapidata.MongoDB.Migrations.Contracts;
+using Rapidata.MongoDB.Migrations.Entities;
 using Rapidata.MongoDB.Migrations.Providers;
 using Rapidata.MongoDB.Migrations.Repositories;
 using Rapidata.MongoDB.Migrations.Utils;
@@ -149,7 +151,14 @@ public class MigrationService : IMigrationService
         var migrationSet = new HashSet<IBaseMigration>(appliedMigrations, new MigrationEqualityComparer());
 
         return _migrationResolver
-            .GetMigrations(assemblies, migrationSet, _config.RetryFailedMigrations)
+            .GetMigrations(assemblies)
+            .Where(migration =>
+            {
+                if (migrationSet.TryGetValue(migration, out var executedMigration))
+                    return _config.RetryFailedMigrations && executedMigration is Migration { State: MigrationState.Failed };
+
+                return true;
+            })
             .OrderBy(x => x.Date)
             .ThenBy(x => x.DeveloperId)
             .ThenBy(x => x.Version)

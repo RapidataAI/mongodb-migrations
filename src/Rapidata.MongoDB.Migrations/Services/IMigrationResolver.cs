@@ -5,8 +5,5 @@ namespace Rapidata.MongoDB.Migrations.Services;
 
 public interface IMigrationResolver
 {
-    IEnumerable<IMigration> GetMigrations(
-        IEnumerable<Assembly> assemblies,
-        HashSet<IBaseMigration> executedMigrations,
-        bool retryFailedMigrations);
+    IEnumerable<IMigration> GetMigrations(IEnumerable<Assembly> assemblies);
 }

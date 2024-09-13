@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Authors>Rapidata</Authors>
-        <Version>0.0.7</Version>
+        <Version>0.0.8</Version>
         <Title>A modern migration engine for MongoDB in C#</Title>
         <PackageProjectUrl>https://rapidata.ai</PackageProjectUrl>
         <RepositoryUrl>https://github.com/RapidataAI/mongodb-migrations</RepositoryUrl>
