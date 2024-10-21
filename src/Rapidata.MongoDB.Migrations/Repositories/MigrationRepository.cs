@@ -91,7 +91,8 @@ public class MigrationRepository : IMigrationRepository
     {
         var collection = GetCollection();
 
-        var filter = Builders<Migration>.Filter.Eq(x => x.Version, migration.Version);
+        var filter = Builders<Migration>.Filter.Eq(x => x.Version, migration.Version) &
+                     Builders<Migration>.Filter.Eq(x => x.DeveloperId, migration.DeveloperId);
 
         var update = Builders<Migration>.Update
             .Set(x => x.State, MigrationState.Applied);
@@ -105,7 +106,8 @@ public class MigrationRepository : IMigrationRepository
     {
         var collection = GetCollection();
 
-        var filter = Builders<Migration>.Filter.Eq(x => x.Version, migration.Version);
+        var filter = Builders<Migration>.Filter.Eq(x => x.Version, migration.Version) &
+                     Builders<Migration>.Filter.Eq(x => x.DeveloperId, migration.DeveloperId);
 
         var update = Builders<Migration>.Update
             .Set(x => x.State, MigrationState.Failed);
