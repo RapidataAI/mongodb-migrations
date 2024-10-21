@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Rapidata.MongoDB.Migrations.AspNetCore.Services;
 using Rapidata.MongoDB.Migrations.Config;
 using Rapidata.MongoDB.Migrations.Core;
 using Rapidata.MongoDB.Migrations.Services;
@@ -22,7 +23,7 @@ public static class HostBuilderExtensions
             {
                 services.AddSingleton<IMigrationService, MigrationService>();
                 services.AddSingleton<MigrationEngine>();
-                services.AddSingleton<IMigrationResolver, MigrationResolver>();
+                services.AddSingleton<IMigrationResolver, ServiceProviderMigrationResolver>();
                 services.AddSingleton(configBuilder.Build(logger));
             });
     }
