@@ -7,7 +7,7 @@ namespace Rapidata.MongoDB.Migrations.AspNetCore.Startup;
 
 public static class HostExtensions
 {
-    public static async Task<IHost> MigrateMongoDb(this IHost host)
+    public async static Task<IHost> MigrateMongoDb(this IHost host)
     {
         var migrationConfig = host.Services.GetRequiredService<MigrationConfig>();
 

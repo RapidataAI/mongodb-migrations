@@ -1,6 +1,5 @@
 using System.Reflection;
 using Microsoft.Extensions.Logging;
-using MongoDB.Driver.Linq;
 using Rapidata.MongoDB.Migrations.Config;
 using Rapidata.MongoDB.Migrations.Contracts;
 using Rapidata.MongoDB.Migrations.Entities;
@@ -35,16 +34,21 @@ public class MigrationService : IMigrationService
         var migrationsToExecutePerDatabase = new Dictionary<string, IList<IMigration>>();
 
         foreach (var (databaseName, assemblies) in _config.MigrationAssembliesPerDatabase)
+        {
             migrationsToExecutePerDatabase[databaseName] =
                 await GetMigrationsToExecute(databaseName, assemblies, cancellationToken)
                     .ConfigureAwait(false);
+        }
 
         return migrationsToExecutePerDatabase;
     }
 
     public async Task ExecuteMigration(string databaseName, IMigration migration, CancellationToken cancellationToken)
     {
-        if (!await CanExecuteMigrations(databaseName, cancellationToken).ConfigureAwait(false)) return;
+        if (!await CanExecuteMigrations(databaseName, cancellationToken).ConfigureAwait(false))
+        {
+            return;
+        }
 
         await WaitForRunningMigrations(databaseName, cancellationToken).ConfigureAwait(false);
 
@@ -82,14 +86,20 @@ public class MigrationService : IMigrationService
                 cancellationToken = newCancellationTokenSource.Token;
             }
 
-            _logger.LogError(ex, "Migration {MigrationName} with version {MigrationVersion} failed",
-                migration.Name, migration.Version);
+            _logger.LogError(
+                ex,
+                "Migration {MigrationName} with version {MigrationVersion} failed",
+                migration.Name,
+                migration.Version);
 
             await migrationRepository
                 .FailMigration(migration, cancellationToken)
                 .ConfigureAwait(false);
 
-            if (_config.RethrowExceptions) throw;
+            if (_config.RethrowExceptions)
+            {
+                throw;
+            }
         }
     }
 
@@ -152,13 +162,19 @@ public class MigrationService : IMigrationService
 
         return _migrationResolver
             .GetMigrations(assemblies)
-            .Where(migration =>
-            {
-                if (migrationSet.TryGetValue(migration, out var executedMigration))
-                    return _config.RetryFailedMigrations && executedMigration is Migration { State: MigrationState.Failed };
+            .Where(
+                migration =>
+                {
+                    if (migrationSet.TryGetValue(migration, out var executedMigration))
+                    {
+                        return _config.RetryFailedMigrations && executedMigration is Migration
+                        {
+                            State: MigrationState.Failed,
+                        };
+                    }
 
-                return true;
-            })
+                    return true;
+                })
             .OrderBy(x => x.Date)
             .ThenBy(x => x.DeveloperId)
             .ThenBy(x => x.Version)
@@ -169,7 +185,7 @@ public class MigrationService : IMigrationService
     {
         var client = _mongoClientProvider.GetClient();
         var database = client.GetDatabase(databaseName);
-        
+
         return new MigrationRepository(database, _config);
     }
 }

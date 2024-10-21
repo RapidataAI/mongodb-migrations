@@ -18,8 +18,9 @@ public class DiTests
         // Arrange
         var host = Host.CreateDefaultBuilder()
             .AddMongoDbMigrations()
-            .ConfigureServices(collection =>
-                collection.AddSingleton<IMongoClientProvider>(new DefaultMongoClientProvider(MongoFixture.Client)))
+            .ConfigureServices(
+                collection =>
+                    collection.AddSingleton<IMongoClientProvider>(new DefaultMongoClientProvider(MongoFixture.Client)))
             .Build();
 
         // Act
@@ -37,12 +38,14 @@ public class DiTests
     {
         // Arrange
         var host = Host.CreateDefaultBuilder()
-            .AddMongoDbMigrations(builder => builder
-                .WithDatabase("default")
-                .WithCollection("_migrations")
-                .WithMigrationAssemblies(typeof(TestMigration).Assembly))
-            .ConfigureServices(collection =>
-                collection.AddSingleton<IMongoClientProvider>(new DefaultMongoClientProvider(MongoFixture.Client)))
+            .AddMongoDbMigrations(
+                builder => builder
+                    .WithDatabase("default")
+                    .WithCollection("_migrations")
+                    .WithMigrationAssemblies(typeof(TestMigration).Assembly))
+            .ConfigureServices(
+                collection =>
+                    collection.AddSingleton<IMongoClientProvider>(new DefaultMongoClientProvider(MongoFixture.Client)))
             .Build();
 
         // Act

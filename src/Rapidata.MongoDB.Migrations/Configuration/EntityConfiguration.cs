@@ -10,18 +10,19 @@ public static class EntityConfiguration
 {
     public static void ConfigureMigration()
     {
-        BsonClassMap.TryRegisterClassMap<Migration>(classMap =>
-        {
-            classMap.AutoMap();
+        BsonClassMap.TryRegisterClassMap<Migration>(
+            classMap =>
+            {
+                classMap.AutoMap();
 
-            classMap.MapProperty(migration => migration.Id)
-                .SetSerializer(new StringSerializer(BsonType.ObjectId));
+                classMap.MapProperty(migration => migration.Id)
+                    .SetSerializer(new StringSerializer(BsonType.ObjectId));
 
-            classMap.MapProperty(migration => migration.State)
-                .SetSerializer(new EnumSerializer<MigrationState>(BsonType.String));
-            
-            classMap.MapProperty(migration => migration.Date)
-                .SetSerializer(new DateOnlySerializer());
-        });
+                classMap.MapProperty(migration => migration.State)
+                    .SetSerializer(new EnumSerializer<MigrationState>(BsonType.String));
+
+                classMap.MapProperty(migration => migration.Date)
+                    .SetSerializer(new DateOnlySerializer());
+            });
     }
 }

@@ -40,7 +40,8 @@ public class MigrationRepository : IMigrationRepository
 
         var filter = Builders<Migration>.Filter.Empty;
 
-        return await collection.Find(filter).ToListAsync(cancellationToken)
+        return await collection.Find(filter)
+            .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -61,9 +62,10 @@ public class MigrationRepository : IMigrationRepository
     {
         var collection = GetCollection();
 
-        var filter = Builders<Migration>.Filter.Where(m => m.Date == migration.Date &&
-                                                           m.DeveloperId == migration.DeveloperId &&
-                                                           m.Version == migration.Version);
+        var filter = Builders<Migration>.Filter.Where(
+            m => m.Date == migration.Date &&
+                 m.DeveloperId == migration.DeveloperId &&
+                 m.Version == migration.Version);
 
         var update = Builders<Migration>.Update
             .SetOnInsert(x => x.Name, migration.Name)
@@ -75,7 +77,7 @@ public class MigrationRepository : IMigrationRepository
 
         var options = new UpdateOptions
         {
-            IsUpsert = true
+            IsUpsert = true,
         };
 
         var result = await collection

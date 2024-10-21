@@ -10,6 +10,9 @@ public class DefaultMongoClientProvider : IMongoClientProvider
     {
         _mongoClient = mongoClient;
     }
-    
-    public IMongoClient GetClient() => _mongoClient;
+
+    public IMongoClient GetClient()
+    {
+        return _mongoClient;
+    }
 }

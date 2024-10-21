@@ -10,8 +10,11 @@ namespace Rapidata.MongoDB.Migrations.Tests.Integration.Repositories;
 public class MigrationRepositoryTests
 {
     private string CollectionName { get; set; } = null!;
+
     private MigrationRepository Subject { get; set; } = null!;
+
     private IMongoCollection<Migration> Collection { get; set; } = null!;
+
     private IMongoDatabase Database { get; set; } = null!;
 
     [SetUp]
@@ -241,7 +244,12 @@ public class MigrationRepositoryTests
         var result = await Subject.GetFailedMigrations(CancellationToken.None).ConfigureAwait(false);
 
         // Assert
-        result.Should().BeEquivalentTo(new short[] { 3 });
+        result.Should()
+            .BeEquivalentTo(
+                new short[]
+                {
+                    3,
+                });
     }
 
     [Test]
@@ -287,7 +295,9 @@ public class MigrationRepositoryTests
         // Act
         var tasks = new List<Task<bool>>();
         for (var i = 0; i < numberOfTasks; i++)
+        {
             tasks.Add(Subject.StartMigration(migration.Object, CancellationToken.None));
+        }
 
         var results = await Task.WhenAll(tasks).ConfigureAwait(false);
 

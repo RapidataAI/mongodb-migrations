@@ -15,7 +15,6 @@ A modern, thread-safe MongoDB migration engine for C#
 
 ## Usage
 
-
 ### Basic Usage
 
 To get started, define the migrations in an assembly.

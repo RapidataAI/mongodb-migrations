@@ -25,14 +25,20 @@ public sealed class MigrationConfigBuilder
     {
         if (_migrationAssembliesPerDatabase.Count != 0 &&
             (_databaseName is not null || _migrationAssemblies.Count != 0))
+        {
             logger?.LogWarning(
                 "Can not use both WithMigrationsAssembliesPerDatabase and WithMigrationAssemblies or WithDatabaseName. Using WithMigrationsAssembliesPerDatabase");
+        }
 
         if (_migrationAssembliesPerDatabase.Count == 0 && _databaseName is null && _migrationAssemblies.Count == 0)
+        {
             logger?.LogWarning("No migration assemblies or database name provided. Will not run any migrations");
+        }
 
         if (_databaseName is not null && _migrationAssembliesPerDatabase.Count == 0)
+        {
             _migrationAssembliesPerDatabase.TryAdd(_databaseName, _migrationAssemblies);
+        }
 
         return new MigrationConfig
         {
@@ -44,7 +50,7 @@ public sealed class MigrationConfigBuilder
             MigrationTimeout = _migrationTimeout,
             MigrationAssembliesPerDatabase = _migrationAssembliesPerDatabase,
             WaitForRunningMigrationsTimeout = _waitForRunningMigrationsTimeout,
-            WaitForRunningMigrationsPollingInterval = _waitForRunningMigrationsPollingInterval
+            WaitForRunningMigrationsPollingInterval = _waitForRunningMigrationsPollingInterval,
         };
     }
 

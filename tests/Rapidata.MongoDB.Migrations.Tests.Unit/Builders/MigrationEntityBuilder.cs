@@ -23,7 +23,7 @@ public class MigrationEntityBuilder
             State = _state,
             AppliedAt = _createdAt,
             Date = _date,
-            DeveloperId = _developerId
+            DeveloperId = _developerId,
         };
     }
 

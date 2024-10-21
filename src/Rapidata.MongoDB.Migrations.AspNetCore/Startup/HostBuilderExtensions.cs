@@ -17,12 +17,13 @@ public static class HostBuilderExtensions
         var configBuilder = new MigrationConfigBuilder();
         configure?.Invoke(configBuilder);
 
-        return hostBuilder.ConfigureServices((_, services) =>
-        {
-            services.AddSingleton<IMigrationService, MigrationService>();
-            services.AddSingleton<MigrationEngine>();
-            services.AddSingleton<IMigrationResolver, MigrationResolver>();
-            services.AddSingleton(configBuilder.Build(logger));
-        });
+        return hostBuilder.ConfigureServices(
+            (_, services) =>
+            {
+                services.AddSingleton<IMigrationService, MigrationService>();
+                services.AddSingleton<MigrationEngine>();
+                services.AddSingleton<IMigrationResolver, MigrationResolver>();
+                services.AddSingleton(configBuilder.Build(logger));
+            });
     }
 }

@@ -16,11 +16,17 @@ namespace Rapidata.MongoDB.Migrations.Tests.Integration.Core;
 public class MigrationEngineTests
 {
     private const string DefaultDatabaseName = "default";
+
     private string CollectionName { get; set; } = null!;
+
     private MigrationEngine Subject { get; set; } = null!;
+
     private IDictionary<string, IMongoCollection<Migration>> Collections { get; set; } = null!;
+
     private IMongoCollection<Migration> DefaultCollection => Collections[DefaultDatabaseName];
+
     private MigrationService MigrationService { get; set; } = null!;
+
     private Mock<IMigrationResolver> MigrationResolver { get; set; } = null!;
 
     private void Setup(Action<MigrationConfigBuilder>? configure = null, params IMigration[] migrations)
@@ -48,14 +54,18 @@ public class MigrationEngineTests
 
         Subject = new MigrationEngine(MigrationService, logger);
         Collections = config.MigrationAssembliesPerDatabase.Keys
-            .ToDictionary(databaseName => databaseName,
+            .ToDictionary(
+                databaseName => databaseName,
                 databaseName => MongoFixture.Client.GetDatabase(databaseName).GetCollection<Migration>(CollectionName));
     }
 
     [TearDown]
     public void TearDown()
     {
-        foreach (var database in Collections.Keys) MongoFixture.Client.DropDatabase(database);
+        foreach (var database in Collections.Keys)
+        {
+            MongoFixture.Client.DropDatabase(database);
+        }
     }
 
     [Test]
@@ -67,9 +77,9 @@ public class MigrationEngineTests
         var migration = new MigrationMockBuilder()
             .WithName(name)
             .WithVersion(version)
-            .WithDate(new DateOnly(2024, 10, 13))
+            .WithDate(new DateOnly(year: 2024, month: 10, day: 13))
             .Build();
-        Setup(null, migration.Object);
+        Setup(configure: null, migration.Object);
 
         // Act
         await Subject.Migrate(CancellationToken.None);
@@ -79,7 +89,7 @@ public class MigrationEngineTests
         appliedMigration.Version.Should().Be(version);
         appliedMigration.Name.Should().Be(name);
         appliedMigration.AppliedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMilliseconds(100));
-        appliedMigration.Date.Should().Be(new DateOnly(2024, 10, 13));
+        appliedMigration.Date.Should().Be(new DateOnly(year: 2024, month: 10, day: 13));
     }
 
     [Test]
@@ -87,7 +97,7 @@ public class MigrationEngineTests
     {
         // Arrange
         var migration = new MigrationMockBuilder().Build();
-        Setup(null, migration.Object);
+        Setup(configure: null, migration.Object);
 
         // Act
         await Subject.Migrate(CancellationToken.None);
@@ -102,7 +112,7 @@ public class MigrationEngineTests
     {
         // Arrange
         var migration = new MigrationMockBuilder().WithAction((_, _) => throw new Exception()).Build();
-        Setup(null, migration.Object);
+        Setup(configure: null, migration.Object);
 
         // Act
         await Subject.Migrate(CancellationToken.None);
@@ -119,20 +129,25 @@ public class MigrationEngineTests
         // Arrange
         var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(50000));
         var migration = new MigrationMockBuilder().Build();
-        Setup(null, migration.Object);
+        Setup(configure: null, migration.Object);
 
         var jobs = new List<Task>();
-        for (var i = 0; i < concurrentJobs; i++) jobs.Add(Subject.Migrate(cts.Token));
+        for (var i = 0; i < concurrentJobs; i++)
+        {
+            jobs.Add(Subject.Migrate(cts.Token));
+        }
 
         // Act
         await Task.WhenAll(jobs.ToArray());
 
         // Assert
-        var count = await DefaultCollection.CountDocumentsAsync(FilterDefinition<Migration>.Empty,
+        var count = await DefaultCollection.CountDocumentsAsync(
+            FilterDefinition<Migration>.Empty,
             cancellationToken: cts.Token);
         count.Should().Be(1);
 
-        migration.Verify(m => m.Migrate(It.IsAny<IMongoDatabase>(), It.IsAny<CancellationToken>()),
+        migration.Verify(
+            m => m.Migrate(It.IsAny<IMongoDatabase>(), It.IsAny<CancellationToken>()),
             Times.Once);
     }
 
@@ -141,7 +156,8 @@ public class MigrationEngineTests
     {
         // Arrange
         var migration = new MigrationMockBuilder().Build();
-        Setup(builder => builder
+        Setup(
+            builder => builder
                 .WithMigrationAssembliesForDatabase("db1")
                 .WithMigrationAssembliesForDatabase("db2"),
             migration.Object);
@@ -166,55 +182,64 @@ public class MigrationEngineTests
             .WithDate(DateOnly.FromDateTime(DateTime.Today.AddDays(-1)))
             .WithDeveloperId(1)
             .WithVersion(1)
-            .Build().Object;
+            .Build()
+            .Object;
 
         var migration2 = new MigrationMockBuilder()
             .WithDate(DateOnly.FromDateTime(DateTime.Today))
             .WithDeveloperId(1)
             .WithVersion(2)
-            .Build().Object;
+            .Build()
+            .Object;
 
         var migration3 = new MigrationMockBuilder()
             .WithDate(DateOnly.FromDateTime(DateTime.Today))
             .WithDeveloperId(2)
             .WithVersion(1)
-            .Build().Object;
+            .Build()
+            .Object;
 
         var migration4 = new MigrationMockBuilder()
             .WithDate(DateOnly.FromDateTime(DateTime.Today))
             .WithDeveloperId(2)
             .WithVersion(2)
-            .Build().Object;
+            .Build()
+            .Object;
 
         var migration5 = new MigrationMockBuilder()
             .WithDate(DateOnly.FromDateTime(DateTime.Today.AddDays(1)))
             .WithDeveloperId(null)
             .WithVersion(1)
-            .Build().Object;
+            .Build()
+            .Object;
 
         var migration6 = new MigrationMockBuilder()
             .WithDate(DateOnly.FromDateTime(DateTime.Today.AddDays(1)))
             .WithDeveloperId(null)
             .WithVersion(2)
-            .Build().Object;
+            .Build()
+            .Object;
 
         var migration7 = new MigrationMockBuilder()
             .WithDate(DateOnly.FromDateTime(DateTime.Today.AddDays(1)))
             .WithDeveloperId(null)
             .WithVersion(3)
-            .Build().Object;
+            .Build()
+            .Object;
 
         var migration8 = new MigrationMockBuilder()
             .WithDate(DateOnly.FromDateTime(DateTime.Today.AddDays(1)))
             .WithDeveloperId(1)
             .WithVersion(1)
-            .Build().Object;
+            .Build()
+            .Object;
 
         var migration9 = new MigrationMockBuilder()
             .WithDate(DateOnly.FromDateTime(DateTime.Today.AddDays(1)))
             .WithDeveloperId(1)
             .WithVersion(2)
-            .Build().Object;
+            .Build()
+            .Object;
 
         var migrations = new List<IMigration>
         {
@@ -226,28 +251,31 @@ public class MigrationEngineTests
             migration9,
             migration1,
             migration5,
-            migration8
+            migration8,
         };
 
-        Setup(null, migrations.ToArray());
+        Setup(configure: null, migrations.ToArray());
 
         // Act
         var result = await MigrationService.GetMigrationsToExecutePerDatabase(CancellationToken.None);
 
         // Assert
         var totalMigrations = result.SelectMany(x => x.Value).ToList();
-        totalMigrations.Should().BeEquivalentTo(new List<IMigration>
-        {
-            migration1,
-            migration2,
-            migration3,
-            migration4,
-            migration5,
-            migration6,
-            migration7,
-            migration8,
-            migration9
-        }, options => options.WithStrictOrdering());
+        totalMigrations.Should()
+            .BeEquivalentTo(
+                new List<IMigration>
+                {
+                    migration1,
+                    migration2,
+                    migration3,
+                    migration4,
+                    migration5,
+                    migration6,
+                    migration7,
+                    migration8,
+                    migration9,
+                },
+                options => options.WithStrictOrdering());
     }
 
     [Test]
@@ -255,7 +283,7 @@ public class MigrationEngineTests
     {
         // Arrange
         var migration1 = new MigrationMockBuilder().Build();
-        Setup(null, migration1.Object);
+        Setup(configure: null, migration1.Object);
         await Subject.Migrate(CancellationToken.None);
 
         var migration2 = new MigrationMockBuilder().WithVersion(2).Build();

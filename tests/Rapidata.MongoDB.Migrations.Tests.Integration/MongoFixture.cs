@@ -8,23 +8,22 @@ namespace Rapidata.MongoDB.Migrations.Tests.Integration;
 public class MongoFixture
 {
     private static MongoDbContainer _container = null!;
-    private static MongoClient _client = null!;
 
-    public static MongoClient Client => _client;
+    public static MongoClient Client { get; private set; } = null!;
 
     [OneTimeSetUp]
-    public static async Task Setup()
+    public async static Task Setup()
     {
-        _container = new MongoDbBuilder().WithPortBinding(7521, MongoDbBuilder.MongoDbPort).Build();
+        _container = new MongoDbBuilder().WithPortBinding(hostPort: 7521, MongoDbBuilder.MongoDbPort).Build();
 
         await _container.StartAsync().ConfigureAwait(false);
 
-        _client = new MongoClient(_container.GetConnectionString());
+        Client = new MongoClient(_container.GetConnectionString());
         EntityConfiguration.ConfigureMigration();
     }
 
     [OneTimeTearDown]
-    public static async Task TearDown()
+    public async static Task TearDown()
     {
         await _container.DisposeAsync().ConfigureAwait(false);
     }

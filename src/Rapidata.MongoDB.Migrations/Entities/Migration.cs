@@ -8,13 +8,13 @@ public sealed class Migration : IBaseMigration
 
     public required string Name { get; init; }
 
+    public required MigrationState State { get; init; }
+
+    public required DateTime AppliedAt { get; init; }
+
     public required DateOnly Date { get; init; }
 
     public required int? DeveloperId { get; init; }
 
     public required short Version { get; init; }
-
-    public required MigrationState State { get; init; }
-
-    public required DateTime AppliedAt { get; init; }
 }

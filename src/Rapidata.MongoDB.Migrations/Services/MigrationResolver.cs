@@ -7,10 +7,11 @@ public class MigrationResolver : IMigrationResolver
 {
     public IEnumerable<IMigration> GetMigrations(IEnumerable<Assembly> assemblies)
     {
-        return  assemblies
+        return assemblies
             .SelectMany(assembly => assembly.GetTypes())
-            .Where(type => typeof(IMigration).IsAssignableFrom(type)
-                           && type is { IsInterface: false, IsAbstract: false })
+            .Where(
+                type => typeof(IMigration).IsAssignableFrom(type)
+                        && type is { IsInterface: false, IsAbstract: false })
             .Select(Activator.CreateInstance)
             .OfType<IMigration>();
     }

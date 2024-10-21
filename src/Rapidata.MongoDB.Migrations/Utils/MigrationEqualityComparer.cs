@@ -6,9 +6,18 @@ public class MigrationEqualityComparer : IEqualityComparer<IBaseMigration>
 {
     public bool Equals(IBaseMigration? x, IBaseMigration? y)
     {
-        if (ReferenceEquals(x, y)) return true;
-        if (x is null) return false;
-        if (y is null) return false;
+        if (ReferenceEquals(x, y))
+        {
+            return true;
+        }
+        if (x is null)
+        {
+            return false;
+        }
+        if (y is null)
+        {
+            return false;
+        }
         return x.Date.Equals(y.Date) && x.Version == y.Version && x.DeveloperId == y.DeveloperId;
     }
 

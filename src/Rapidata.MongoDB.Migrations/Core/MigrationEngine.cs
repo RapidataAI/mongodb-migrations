@@ -23,8 +23,9 @@ public sealed class MigrationEngine
         var migrationsPerDatabase = await _migrationService.GetMigrationsToExecutePerDatabase(cancellationToken)
             .ConfigureAwait(false);
 
-        var tasks = migrationsPerDatabase.Select(pair =>
-            ExecuteMigrationsForDatabase(pair.Key, pair.Value, cancellationToken));
+        var tasks = migrationsPerDatabase.Select(
+            pair =>
+                ExecuteMigrationsForDatabase(pair.Key, pair.Value, cancellationToken));
 
         await Task.WhenAll(tasks).ConfigureAwait(false);
     }
@@ -34,7 +35,9 @@ public sealed class MigrationEngine
         IList<IMigration> migrations,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Executing {MigrationCount} migrations on database {DatabaseName}", migrations.Count,
+        _logger.LogInformation(
+            "Executing {MigrationCount} migrations on database {DatabaseName}",
+            migrations.Count,
             databaseName);
 
         await _migrationService.CanExecuteMigrations(databaseName, cancellationToken)
@@ -45,7 +48,10 @@ public sealed class MigrationEngine
             var migration = migrations[i];
             _logger.LogInformation(
                 "Executing migration {MigrationName} on database {DatabaseName}. ({MigrationIndex}/{MigrationCount})",
-                migration.Name, databaseName, i + 1, migrations.Count);
+                migration.Name,
+                databaseName,
+                i + 1,
+                migrations.Count);
 
             await _migrationService.ExecuteMigration(databaseName, migration, cancellationToken)
                 .ConfigureAwait(false);

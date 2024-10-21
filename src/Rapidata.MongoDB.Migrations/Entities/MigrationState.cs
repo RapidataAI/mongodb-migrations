@@ -4,5 +4,5 @@ public enum MigrationState
 {
     Executing,
     Applied,
-    Failed
+    Failed,
 }
