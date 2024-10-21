@@ -1,0 +1,10 @@
+﻿<Solution>
+  <Folder Name="/src/">
+    <Project Path="src\Rapidata.MongoDB.Migrations.AspNetCore\Rapidata.MongoDB.Migrations.AspNetCore.csproj" Type="Classic C#" />
+    <Project Path="src\Rapidata.MongoDB.Migrations\Rapidata.MongoDB.Migrations.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests\Rapidata.MongoDB.Migrations.Tests.Integration\Rapidata.MongoDB.Migrations.Tests.Integration.csproj" Type="Classic C#" />
+    <Project Path="tests\Rapidata.MongoDB.Migrations.Tests.Unit\Rapidata.MongoDB.Migrations.Tests.Unit.csproj" Type="Classic C#" />
+  </Folder>
+</Solution>
