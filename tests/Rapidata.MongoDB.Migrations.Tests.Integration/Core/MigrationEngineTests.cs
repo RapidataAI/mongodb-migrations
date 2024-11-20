@@ -299,4 +299,44 @@ public class MigrationEngineTests
         var count = await DefaultCollection.CountDocumentsAsync(FilterDefinition<Migration>.Empty);
         count.Should().Be(2);
     }
+
+    [Test]
+    public async Task Migrate_WhenTwoMigrationsWithSameVersionButDifferentDate_AppliesBoth()
+    {
+        // Arrange
+        var migration1 = new MigrationMockBuilder().WithVersion(1).WithDate(DateOnly.FromDateTime(DateTime.Today))
+            .Build();
+        var migration2 = new MigrationMockBuilder().WithVersion(1)
+            .WithDate(DateOnly.FromDateTime(DateTime.Today.AddDays(1))).Build();
+        Setup(configure: null, migration1.Object, migration2.Object);
+
+        // Act
+        await Subject.Migrate(CancellationToken.None);
+
+        // Assert
+        var count = await DefaultCollection.CountDocumentsAsync(FilterDefinition<Migration>.Empty);
+        count.Should().Be(2);
+    }
+
+    [Test]
+    public async Task Migrate_WhenMigrationWithSameVersionButDifferentDateAlreadyApplied_StillsAppliesMigration()
+    {
+        // Arrange
+        var migration1 = new MigrationMockBuilder().WithVersion(1).WithDate(DateOnly.FromDateTime(DateTime.Today))
+            .Build();
+        Setup(configure: null, migration1.Object);
+        await Subject.Migrate(CancellationToken.None);
+
+        var migration2 = new MigrationMockBuilder().WithVersion(1)
+            .WithDate(DateOnly.FromDateTime(DateTime.Today.AddDays(1))).Build();
+        MigrationResolver.Setup(x => x.GetMigrations(It.IsAny<IEnumerable<Assembly>>()))
+            .Returns([migration2.Object]);
+
+        // Act
+        await Subject.Migrate(CancellationToken.None);
+
+        // Assert
+        var count = await DefaultCollection.CountDocumentsAsync(FilterDefinition<Migration>.Empty);
+        count.Should().Be(2);
+    }
 }

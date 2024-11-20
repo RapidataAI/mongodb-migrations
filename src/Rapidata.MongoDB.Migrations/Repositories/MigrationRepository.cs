@@ -84,14 +84,15 @@ public class MigrationRepository : IMigrationRepository
             .UpdateOneAsync(filter, update, options, cancellationToken)
             .ConfigureAwait(false);
 
-        return result.UpsertedId != null;
+        return result.UpsertedId is not null;
     }
 
     public async Task CompleteMigration(IMigration migration, CancellationToken cancellationToken)
     {
         var collection = GetCollection();
 
-        var filter = Builders<Migration>.Filter.Eq(x => x.Version, migration.Version) &
+        var filter = Builders<Migration>.Filter.Eq(x => x.Date, migration.Date) &
+                     Builders<Migration>.Filter.Eq(x => x.Version, migration.Version) &
                      Builders<Migration>.Filter.Eq(x => x.DeveloperId, migration.DeveloperId);
 
         var update = Builders<Migration>.Update
@@ -106,7 +107,8 @@ public class MigrationRepository : IMigrationRepository
     {
         var collection = GetCollection();
 
-        var filter = Builders<Migration>.Filter.Eq(x => x.Version, migration.Version) &
+        var filter = Builders<Migration>.Filter.Eq(x => x.Date, migration.Date) &
+                     Builders<Migration>.Filter.Eq(x => x.Version, migration.Version) &
                      Builders<Migration>.Filter.Eq(x => x.DeveloperId, migration.DeveloperId);
 
         var update = Builders<Migration>.Update
