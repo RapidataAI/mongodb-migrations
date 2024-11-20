@@ -34,11 +34,11 @@ jobs:
       - name: Pack & Publish Rapidata.MongoDB.Migrations
         if: ${{ steps.release.outputs.new_release_version }}
         run: |
-          dotnet pack src/Rapidata.MongoDB.Migrations/Rapidata.MongoDB.Migrations.csproj --configuration Release --include-symbols --output ${{ github.workspace }}/output/Rapidata.MongoDB.Migrations
+          dotnet pack src/Rapidata.MongoDB.Migrations/Rapidata.MongoDB.Migrations.csproj --configuration Release --include-symbols -p:SymbolPackageFormat=snupkg --output ${{ github.workspace }}/output/Rapidata.MongoDB.Migrations
           dotnet nuget push ${{ github.workspace }}/output/Rapidata.MongoDB.Migrations/*.nupkg -k ${{ secrets.NUGET_TOKEN }} -s ${{ secrets.NUGET_PUSH_URL }}
         
       - name: Pack & Publish Rapidata.MongoDB.Migrations.AspNetCore
         if: ${{ steps.release.outputs.new_release_version }}
         run: |
-          dotnet pack src/Rapidata.MongoDB.Migrations.AspNetCore/Rapidata.MongoDB.Migrations.AspNetCore.csproj --configuration Release --include-symbols --output ${{ github.workspace }}/output/Rapidata.MongoDB.Migrations.AspNetCore
+          dotnet pack src/Rapidata.MongoDB.Migrations.AspNetCore/Rapidata.MongoDB.Migrations.AspNetCore.csproj --configuration Release --include-symbols -p:SymbolPackageFormat=snupkg --output ${{ github.workspace }}/output/Rapidata.MongoDB.Migrations.AspNetCore
           dotnet nuget push ${{ github.workspace }}/output/Rapidata.MongoDB.Migrations.AspNetCore/*.nupkg -k ${{ secrets.NUGET_TOKEN }} -s ${{ secrets.NUGET_PUSH_URL }}
