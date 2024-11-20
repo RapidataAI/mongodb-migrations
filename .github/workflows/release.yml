@@ -1,0 +1,45 @@
+name: Release
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  version:
+    name: Create New version
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔻 Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: 🏷️ Semantic Release
+        id: release
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+          extra_plugins: |
+            @semantic-release/commit-analyzer
+            @semantic-release/release-notes-generator
+            @semantic-release/github
+            @semantic-release/git
+            @semantic-release/exec
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  deploy:
+    name: Deploy version
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project-name: [ Rapidata.MongoDB.Migrations, Rapidata.MongoDB.Migrations.AspNetCore ]
+    needs: [ version ]
+    steps:
+      - name: Pack & Publish to NuGet
+        run: |
+          dotnet pack src/${{ matrix.project-name }}/${{ matrix.project-path }}.csproj --configuration Release --include-symbols --output ${{ github.workspace }}/output/${{ matrix.project-name }}
+          dotnet nuget push ${{ github.workspace }}/output/${{ matrix.project-name }}/*.nupkg -k ${{ secrets.NUGET_TOKEN }} -s ${{ secrets.NUGET_PUSH_URL }}
