@@ -25,6 +25,7 @@ public class MongoFixture
     [OneTimeTearDown]
     public async static Task TearDown()
     {
+        Client.Dispose();
         await _container.DisposeAsync().ConfigureAwait(false);
     }
 }
