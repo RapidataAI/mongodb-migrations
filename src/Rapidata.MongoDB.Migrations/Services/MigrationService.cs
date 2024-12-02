@@ -107,24 +107,27 @@ public class MigrationService : IMigrationService
     {
         var migrationRepository = GetMigrationRepository(databaseName);
 
-        if (_config.FailOnFailedMigrations)
+        if (!_config.FailOnFailedMigrations)
         {
-            var hasFailedMigrations = await migrationRepository
-                .HasFailedMigrations(cancellationToken)
-                .ConfigureAwait(false);
-
-            if (hasFailedMigrations)
-            {
-                _logger.LogError("Failed migrations found for database {DatabaseName}", databaseName);
-                return false;
-            }
+            return true;
         }
 
-        return true;
+        var hasFailedMigrations = await migrationRepository
+            .HasFailedMigrations(cancellationToken)
+            .ConfigureAwait(false);
+
+        if (!hasFailedMigrations)
+        {
+            return true;
+        }
+
+        _logger.LogError("Failed migrations found for database {DatabaseName}", databaseName);
+        return false;
     }
 
     public async Task WaitForRunningMigrations(string databaseName, CancellationToken cancellationToken)
     {
+        var hasInformedAboutRunningMigrations = false;
         var migrationRepository = GetMigrationRepository(databaseName);
 
         var cancellationTokenSource = new CancellationTokenSource(_config.WaitForRunningMigrationsTimeout);
@@ -138,6 +141,12 @@ public class MigrationService : IMigrationService
 
         while (hasRunningMigrations)
         {
+            if (!hasInformedAboutRunningMigrations)
+            {
+                _logger.LogInformation("Waiting for running migrations to complete");
+                hasInformedAboutRunningMigrations = true;
+            }
+            
             await Task.Delay(_config.WaitForRunningMigrationsPollingInterval, cancellationTokenWithTimeout)
                 .ConfigureAwait(false);
 
