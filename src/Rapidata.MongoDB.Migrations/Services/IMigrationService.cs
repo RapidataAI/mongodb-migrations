@@ -9,6 +9,4 @@ public interface IMigrationService
     Task ExecuteMigration(string databaseName, IMigration migration, CancellationToken cancellationToken);
 
     Task<bool> CanExecuteMigrations(string databaseName, CancellationToken cancellationToken);
-
-    Task WaitForRunningMigrations(string databaseName, CancellationToken cancellationToken);
 }
