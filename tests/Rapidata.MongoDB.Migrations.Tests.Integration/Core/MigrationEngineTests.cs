@@ -339,4 +339,24 @@ public class MigrationEngineTests
         var count = await DefaultCollection.CountDocumentsAsync(FilterDefinition<Migration>.Empty);
         count.Should().Be(2);
     }
+    
+    [Test]
+    public async Task Migrate_WhenMigrationRunsIntoTimeout_MarksMigrationAsFailed()
+    {
+        // Arrange
+        var migration = new MigrationMockBuilder()
+            .WithAction(async (_, cancellationToken) =>
+            {
+                await Task.Delay(1000, cancellationToken);
+            })
+            .Build();
+        Setup(configure: builder => builder.WithMigrationTimeout(TimeSpan.FromMilliseconds(200)), migration.Object);
+
+        // Act
+        await Subject.Migrate(CancellationToken.None);
+
+        // Assert
+        var appliedMigration = await DefaultCollection.Find(FilterDefinition<Migration>.Empty).FirstAsync();
+        appliedMigration.State.Should().Be(MigrationState.Failed);
+    }
 }

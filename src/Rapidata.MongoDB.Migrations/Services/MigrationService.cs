@@ -68,6 +68,15 @@ public class MigrationService : IMigrationService
 
             var client = _mongoClientProvider.GetClient();
             var database = client.GetDatabase(databaseName);
+            
+            // Merge cancellation token with timeout from config
+            if (_config.MigrationTimeout is TimeSpan timeout)
+            {
+                var newCancellationTokenSource = new CancellationTokenSource(timeout);
+                cancellationToken = CancellationTokenSource
+                    .CreateLinkedTokenSource(cancellationToken, newCancellationTokenSource.Token)
+                    .Token;
+            }
 
             await migration.Migrate(database, cancellationToken)
                 .ConfigureAwait(false);
